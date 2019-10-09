@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class WFCTile : MonoBehaviour {
     public List<WFCTileType> superPosition;
+    public int x;
+    public int y;
 
     SpriteRenderer spriteRenderer;
 
@@ -59,21 +60,31 @@ public class WFCTile : MonoBehaviour {
         Refresh();
     }
 
-    public IEnumerator Propagete(WFCTile neighbourTile) {
+    public void SetIndex(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public bool Propagete(WFCTile neighbourTile) {
+        bool changed = false;
         for (int i = superPosition.Count - 1; i >= 0; i--) {
             if (!CanCollapse()) break;
             WFCTileType tileType = superPosition[i];
+            bool compatible = false;
             for (int j = 0; j < neighbourTile.superPosition.Count; j++) {
-                if (!CanCollapse()) break;
                 WFCTileType neighbourTileType = neighbourTile.superPosition[j];
-                if (!tileType.IsCompatible(neighbourTileType.tileType)) {
-                    superPosition.RemoveAt(i);
+                if (tileType.IsCompatible(neighbourTileType.tileType)) {
+                    compatible = true;
                     break;
                 }
             }
+            if (!compatible) {
+                superPosition.RemoveAt(i);
+                changed = true;
+            }
+
         }
         Refresh();
-
-        yield return null;
+        return changed;
     }
 }

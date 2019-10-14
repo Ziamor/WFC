@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class WFCMapGenerator : MonoBehaviour {
     public int mapSize = 10;
     public float runSpeed = 0.001f;
+    public int seed = 1234;
+
     public WFCTileType[] tileTypes;
     public WFCTile tilePrefab;
 
@@ -14,54 +17,67 @@ public class WFCMapGenerator : MonoBehaviour {
     bool running = true;
 
     Queue<WFCTile> tilesToCheck;
+
+    public Random random;
+    public bool start = false;
     // Start is called before the first frame update
     void Start() {
         Init();
-        StartCoroutine(Execute());
+        /*if (!Application.isEditor) {
+            StartCoroutine(Execute());
+        }*/
     }
 
-    // Update is called once per frame
     void Update() {
-        if (running) {
-            //Wave();
+        if (start && running) {
+            Wave();
         }
     }
 
     public void Init() {
-        tilesToCheck = new Queue<WFCTile>();
+        //StopAllCoroutines();
+        Random.InitState(seed);
 
-        if (tiles != null) {
-            for (int x = 0; x < mapSize; x++) {
-                for (int y = 0; y < mapSize; y++) {
-                    if (Application.isEditor)
-                        DestroyImmediate(tiles[x, y].gameObject);
-                    else
-                        Destroy(tiles[x, y].gameObject);
-                }
+        running = true;
+        tilesToCheck = new Queue<WFCTile>();
+        if (transform) {
+            WFCTile[] tilesToRemove = FindObjectsOfType<WFCTile>();
+            foreach (var child in tilesToRemove) {
+                if (Application.isEditor)
+                    DestroyImmediate(child.gameObject);
+                else
+                    Destroy(child.gameObject);
             }
         }
+
+
         tiles = new WFCTile[mapSize, mapSize];
+        int pos_offset = mapSize / 2;
         for (int x = 0; x < mapSize; x++) {
             for (int y = 0; y < mapSize; y++) {
                 tiles[x, y] = Instantiate(tilePrefab, transform).GetComponent<WFCTile>();
                 tiles[x, y].SetSuperPosition(tileTypes);
                 tiles[x, y].SetIndex(x, y);
-                tiles[x, y].transform.position = new Vector3(x, y, 0);
+                tiles[x, y].transform.position = new Vector3(x - pos_offset, y - pos_offset, 0);
             }
         }
+        tiles[pos_offset, pos_offset].Collapse();
+        CheckNeighbours(tiles[pos_offset, pos_offset]);
+        Propagate();
     }
 
     public IEnumerator Execute() {
+        print("Start Running");
         while (running) {
-            //print("Start Wave");
-            yield return Wave();
+            Wave();
+            yield return null;
         }
     }
 
-    public IEnumerator Wave() {
+    public void Wave() {
         print("Wave");
         Observe();
-        yield return Propagate();
+        Propagate();
     }
 
     public void Observe() {
@@ -80,6 +96,7 @@ public class WFCMapGenerator : MonoBehaviour {
         }
         if (tileToCollapse != null) {
             tileToCollapse.Collapse();
+            //tilesToCheck.Enqueue(tileToCollapse);
             CheckNeighbours(tileToCollapse);
         } else {
             running = false;
@@ -91,7 +108,7 @@ public class WFCMapGenerator : MonoBehaviour {
         return x < 0 || x >= mapSize || y < 0 || y >= mapSize;
     }
 
-    public IEnumerator Propagate() {
+    public void Propagate() {
         print("Propogate");
         while (tilesToCheck.Count > 0) {
             WFCTile tile = tilesToCheck.Dequeue();
@@ -113,7 +130,6 @@ public class WFCMapGenerator : MonoBehaviour {
                 }
             }
         }
-        yield return null;
     }
 
     void CheckNeighbours(WFCTile tile) {
@@ -147,11 +163,10 @@ public class WFCMapGeneratorEditor : Editor {
         }
 
         if (GUILayout.Button("Run")) {
-            generator.StartCoroutine(generator.Execute());
+            //generator.StartCoroutine(generator.Execute());
         }
 
         if (GUILayout.Button("Step")) {
-            Debug.Log("Step");
             generator.Wave();
         }
     }

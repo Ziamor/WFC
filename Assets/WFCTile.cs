@@ -7,12 +7,13 @@ public class WFCTile : MonoBehaviour {
     public int y;
 
     SpriteRenderer spriteRenderer;
+    WFCMapGenerator mapGenerator;
 
     float entropy;
 
     // Start is called before the first frame update
     void Start() {
-
+        mapGenerator = FindObjectOfType<WFCMapGenerator>();
     }
 
     // Update is called once per frame
@@ -44,10 +45,20 @@ public class WFCTile : MonoBehaviour {
 
     public float CalculateEntropy() {
         entropy = 0;
+
+        superPosition.Sort((x, y) => (int)(y.testP - x.testP));
+
+        float total = 0;
         for (int i = 0; i < superPosition.Count; i++) {
-            entropy += superPosition[i].testP * Mathf.Log(superPosition[i].testP);
+            total += superPosition[i].testP;
         }
-        return entropy;
+
+        for (int i = 0; i < superPosition.Count; i++) {
+            float v = superPosition[i].testP / total;
+            float logV = Mathf.Log(v);
+            entropy += -v * Mathf.Log(v);
+        }
+        return entropy + Random.value * 0.0001f;
         //return superPosition.Count;
     }
 
@@ -56,8 +67,25 @@ public class WFCTile : MonoBehaviour {
     }
 
     public void Collapse() {
-        superPosition.RemoveAt(Random.Range(0, superPosition.Count));
-        Refresh();
+        float total = 0;
+        for (int i = 0; i < superPosition.Count; i++) {
+            total += superPosition[i].testP;
+        }
+
+        float random = Random.value * total;
+        for (int i = 0; i < superPosition.Count; i++) {
+            float v = superPosition[i].testP;
+            if (random < v) {
+                WFCTileType toKeep = superPosition[i];
+                superPosition.Clear();
+                superPosition.Add(toKeep);
+                Refresh();
+                return;
+            }
+            random -= v;
+        }
+
+        print("Somthing went horribly wrong");
     }
 
     public void SetIndex(int x, int y) {

@@ -26,5 +26,4 @@ public class WFCTileType : ScriptableObject {
 [System.Serializable]
 public struct TileRule {
     public TileType tileType;
-    public float p;
 }

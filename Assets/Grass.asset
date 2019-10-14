@@ -12,13 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874951582196bcb44aa9bd3df179b4f1, type: 3}
   m_Name: Grass
   m_EditorClassIdentifier: 
-  testP: 2
+  testP: 1
   tileType: 0
   color: {r: 0.7329964, g: 0.8962264, b: 0.5453453, a: 0}
   rules:
   - tileType: 0
-    p: 0.5
   - tileType: 3
-    p: 0.25
   - tileType: 1
-    p: 0.25

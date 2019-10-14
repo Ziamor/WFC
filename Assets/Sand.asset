@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874951582196bcb44aa9bd3df179b4f1, type: 3}
   m_Name: Sand
   m_EditorClassIdentifier: 
+  testP: 1.2
   tileType: 1
   color: {r: 1, g: 0.93738335, b: 0.6933962, a: 0}
   rules:
   - tileType: 0
-    p: 0.5
   - tileType: 2
-    p: 0.5
+  - tileType: 1

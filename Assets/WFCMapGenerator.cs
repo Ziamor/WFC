@@ -61,9 +61,9 @@ public class WFCMapGenerator : MonoBehaviour {
                 tiles[x, y].transform.position = new Vector3(x - pos_offset, y - pos_offset, 0);
             }
         }
-        tiles[pos_offset, pos_offset].Collapse();
+        /*tiles[pos_offset, pos_offset].Collapse();
         CheckNeighbours(tiles[pos_offset, pos_offset]);
-        Propagate();
+        Propagate();*/
     }
 
     public IEnumerator Execute() {

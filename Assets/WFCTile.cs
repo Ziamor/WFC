@@ -71,7 +71,7 @@ public class WFCTile : MonoBehaviour {
         for (int i = 0; i < superPosition.Count; i++) {
             total += superPosition[i].testP;
         }
-
+        superPosition.Shuffle();
         float random = Random.value * total;
         for (int i = 0; i < superPosition.Count; i++) {
             float v = superPosition[i].testP;

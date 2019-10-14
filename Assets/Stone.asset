@@ -17,6 +17,4 @@ MonoBehaviour:
   color: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 0}
   rules:
   - tileType: 3
-    p: 0.5
   - tileType: 0
-    p: 0.5

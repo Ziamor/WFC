@@ -119,7 +119,7 @@ public class WFCMapGenerator : MonoBehaviour {
                 for (int j = -1; j <= 1; j++) {
                     if (!tile.CanCollapse())
                         break;
-                    if (i == 0 && j == 0) continue;
+                    if (Mathf.Abs(i) == Mathf.Abs(j)) continue;
                     int x2 = x + i;
                     int y2 = y + j;
                     if (IsBoundry(x2, y2)) continue;
@@ -138,7 +138,7 @@ public class WFCMapGenerator : MonoBehaviour {
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                if (i == 0 && j == 0) continue;
+                if (Mathf.Abs(i) == Mathf.Abs(j)) continue;
                 int x2 = x + i;
                 int y2 = y + j;
                 if (IsBoundry(x2, y2)) continue;

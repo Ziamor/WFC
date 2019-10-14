@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874951582196bcb44aa9bd3df179b4f1, type: 3}
   m_Name: Water
   m_EditorClassIdentifier: 
-  testP: 1.2
+  testP: 1
   tileType: 2
   color: {r: 0.6023496, g: 0.85758066, b: 0.9056604, a: 0}
   rules:
   - tileType: 2
   - tileType: 4
   - tileType: 1
+  - tileType: 0
